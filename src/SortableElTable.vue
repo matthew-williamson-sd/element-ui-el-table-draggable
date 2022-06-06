@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     makeTableSortAble() {
-      const table = this.$children[0].$el.querySelector(
+      const table = this.$el.querySelector(
         ".el-table__body-wrapper tbody"
       );
       sortable.create(table, {
@@ -40,7 +40,7 @@ export default {
         onEnd: ({ newIndex, oldIndex }) => {
           this.keepWrapperHeight(true);
           this.tableKey = Math.random();
-          const arr = this.$children[0].data;
+          const arr = this.$slots.default()[0].props.data;
           const targetRow = arr.splice(oldIndex, 1)[0];
           arr.splice(newIndex, 0, targetRow);
           this.$emit("drop", { targetObject: targetRow, list: arr });
@@ -58,7 +58,9 @@ export default {
     }
   },
   mounted() {
-    this.makeTableSortAble();
+    this.$nextTick(() => {
+      this.makeTableSortAble();
+    })
   },
   watch: {
     tableKey() {
